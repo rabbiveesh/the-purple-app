@@ -1,8 +1,8 @@
-# The Purple App
+# Pretzel (the-purple-app)
 
-A pelvic floor (kegel) exercise app, with enough gamification that the exercises actually happen.
+A pelvic floor (kegel) exercise app, with enough gamification that the exercises actually happen. It presents itself as "Pretzel".
 
-Status: scaffolding only. The product requirements are still being gathered.
+What it does and why: [`docs/requirements.md`](docs/requirements.md).
 
 ## Layout
 

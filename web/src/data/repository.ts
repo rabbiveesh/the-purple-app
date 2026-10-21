@@ -5,7 +5,13 @@ import { SCHEMA_VERSION, type AppData } from './schema'
 const KEY = 'app-data'
 
 export function emptyData(): AppData {
-  return { version: SCHEMA_VERSION }
+  return {
+    version: SCHEMA_VERSION,
+    sessions: [],
+    sessionSurveys: [],
+    weeklyCheckIns: [],
+    monthlyCheckIns: [],
+  }
 }
 
 /** Loads saved data, or null on first run. */

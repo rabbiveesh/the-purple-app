@@ -1,11 +1,20 @@
 import { describe, expect, it } from 'vitest'
 
 import { migrate, UnsupportedDataError } from '../migrations'
+import { emptyData } from '../repository'
 import { SCHEMA_VERSION } from '../schema'
 
 describe('saved data', () => {
   it('loads data saved by the current version unchanged', () => {
-    expect(migrate({ version: SCHEMA_VERSION })).toEqual({ version: SCHEMA_VERSION })
+    const saved = {
+      ...emptyData(),
+      sessions: [{ date: '2026-10-21', slot: 'morning' as const, markedByHand: false }],
+    }
+    expect(migrate(structuredClone(saved))).toEqual(saved)
+  })
+
+  it('upgrades the first, empty version to an empty exercise history', () => {
+    expect(migrate({ version: 1 })).toEqual(emptyData())
   })
 
   it('refuses data from a newer version of the app instead of guessing', () => {

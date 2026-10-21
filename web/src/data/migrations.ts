@@ -1,7 +1,16 @@
 import { SCHEMA_VERSION, type AppData } from './schema'
 
 /** One step per version: migrations[n] upgrades data from version n to n + 1. */
-const migrations: Record<number, (data: Record<string, unknown>) => Record<string, unknown>> = {}
+const migrations: Record<number, (data: Record<string, unknown>) => Record<string, unknown>> = {
+  // v1 was the empty scaffold: start the exercise history.
+  1: (data) => ({
+    ...data,
+    sessions: [],
+    sessionSurveys: [],
+    weeklyCheckIns: [],
+    monthlyCheckIns: [],
+  }),
+}
 
 export class UnsupportedDataError extends Error {}
 

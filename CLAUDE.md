@@ -1,6 +1,6 @@
-# The Purple App
+# Pretzel (the-purple-app)
 
-A pelvic floor (kegel) exercise app for one user, with enough gamification that the exercises actually happen. Product requirements live in the project's shared files (`requirements/requirements.md`). Until they exist, don't build features: ask.
+A pelvic floor (kegel) exercise app for one user, with enough gamification that the exercises actually happen. To the outside world it is just "Pretzel". Product requirements live in `docs/requirements.md`; read them before building anything, and update them when a decision changes.
 
 ## How work arrives
 
@@ -47,10 +47,11 @@ cd web && npx prettier --check src/ && npx oxlint . && npx eslint . && npx vites
 
 ## Product principles
 
-Provisional until the requirements are written; the requirements win where they differ.
+From `docs/requirements.md`, which wins where they differ.
 
-- Private and discreet: nothing about the exercises shows outside the app (the name, icon and any notifications stay neutral).
-- Gamification serves the habit. It should make doing today's session the easy choice, never shame a missed day.
+- Disguised: the app is "Pretzel". The words kegel and pelvic never appear anywhere visible (UI, notifications, voice, manifest). A test checks the UI.
+- Silent mode is truly silent: no sound and no vibration.
+- Fun first: bright colours, pretzel points, a pretzel jar, dancing celebrations. Never shame a missed day.
 - Big, clear views; one obvious thing to do on each screen.
 
 ## Assume you're wrong

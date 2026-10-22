@@ -2,7 +2,7 @@
 // migrations.ts whenever it changes.
 import type { SessionRecord, Slot } from '@/core'
 
-export const SCHEMA_VERSION = 2
+export const SCHEMA_VERSION = 3
 
 /** Dates are local calendar days, `YYYY-MM-DD`. */
 export type IsoDate = string
@@ -37,6 +37,11 @@ export type MonthlyCheckIn = {
   comparedWithStart: -3 | -2 | -1 | 0 | 1 | 2 | 3
 }
 
+export type Settings = {
+  /** The pause between reps (and the release after each long hold). */
+  restBetweenRepsMs: number
+}
+
 export type AppData = {
   version: number
   sessions: SessionRecord[]
@@ -44,4 +49,5 @@ export type AppData = {
   weeklyCheckIns: WeeklyCheckIn[]
   monthlyCheckIns: MonthlyCheckIn[]
   lastCoachMode?: CoachMode
+  settings: Settings
 }

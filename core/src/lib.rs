@@ -17,7 +17,7 @@ use wasm_bindgen::prelude::*;
 use checkin::{CheckInHistory, CheckInsDue};
 use plan::{PlanOptions, SessionPlan};
 use progress::{CalendarMonth, ProgressSummary, SessionRecord, Slot};
-use routine::Routine;
+use routine::{RestBetweenReps, Routine};
 
 /// The core's crate version, so the app can show which build it is running.
 #[wasm_bindgen(js_name = coreVersion)]
@@ -28,6 +28,16 @@ pub fn core_version() -> String {
 #[wasm_bindgen(js_name = defaultRoutine)]
 pub fn default_routine() -> Result<Ts<Routine>, JsError> {
     Ok(routine::default_routine().into_ts()?)
+}
+
+#[wasm_bindgen(js_name = restBetweenRepsLimits)]
+pub fn rest_between_reps_limits() -> Result<Ts<RestBetweenReps>, JsError> {
+    Ok(routine::REST_BETWEEN_REPS.into_ts()?)
+}
+
+#[wasm_bindgen(js_name = withRestBetweenReps)]
+pub fn with_rest_between_reps(routine: Ts<Routine>, rest_ms: u32) -> Result<Ts<Routine>, JsError> {
+    Ok(routine::with_rest_between_reps(&routine.to_rust()?, rest_ms).into_ts()?)
 }
 
 #[wasm_bindgen(js_name = defaultPlanOptions)]

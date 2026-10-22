@@ -43,5 +43,7 @@ describe('the app', () => {
     expect(await screen.findByText(/ready to start/i)).toBeInTheDocument()
     expect(screen.getByText('Silent')).toBeInTheDocument()
     expect(screen.getByText('Voice only')).toBeInTheDocument()
+    expect(screen.getByText('Rest between reps')).toBeInTheDocument()
+    expect(screen.getByText('5 s')).toBeInTheDocument()
   })
 })

@@ -5,6 +5,7 @@ import unstorageMemory from 'unstorage/drivers/memory'
 import { loadAppData } from '@/data/repository'
 import { useDriver } from '@/storage'
 import { useAppStore } from '@/stores/app'
+import { defaultPlanOptions, sessionPlan } from '@/core'
 import { localDate } from '@/time'
 
 beforeEach(async () => {
@@ -56,5 +57,21 @@ describe('progress', () => {
     expect(app.dueCheckIns.weekly).toBe(true)
     await app.saveWeeklyCheckIn({ date: app.today, leaks: 'none', situations: [], bother: 0 })
     expect(app.dueCheckIns.weekly).toBe(false)
+  })
+})
+
+describe('rest between reps', () => {
+  it('starts at 5 seconds', () => {
+    expect(useAppStore().data.settings.restBetweenRepsMs).toBe(5_000)
+  })
+
+  it('a longer rest makes the session longer, and is remembered', async () => {
+    const app = useAppStore()
+    const before = sessionPlan(app.routine, defaultPlanOptions()).totalMs
+    await app.setRestBetweenReps(8_000)
+    const after = sessionPlan(app.routine, defaultPlanOptions()).totalMs
+    // 9 rests in exercises 1 and 3, 10 releases in exercise 2, each 3 s longer
+    expect(after - before).toBe(28 * 3_000)
+    expect((await loadAppData())?.settings.restBetweenRepsMs).toBe(8_000)
   })
 })

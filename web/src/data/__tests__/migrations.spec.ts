@@ -17,6 +17,21 @@ describe('saved data', () => {
     expect(migrate({ version: 1 })).toEqual(emptyData())
   })
 
+  it('keeps the exercise history when the rest between reps became a setting', () => {
+    const v2 = {
+      version: 2,
+      sessions: [{ date: '2026-10-21', slot: 'morning', markedByHand: false }],
+      sessionSurveys: [],
+      weeklyCheckIns: [],
+      monthlyCheckIns: [],
+    }
+    expect(migrate(v2)).toEqual({
+      ...v2,
+      version: 3,
+      settings: { restBetweenRepsMs: 5_000 },
+    })
+  })
+
   it('refuses data from a newer version of the app instead of guessing', () => {
     expect(() => migrate({ version: SCHEMA_VERSION + 1 })).toThrow(UnsupportedDataError)
   })

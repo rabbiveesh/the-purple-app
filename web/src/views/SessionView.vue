@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router'
 
 import CelebrationDance from '@/components/CelebrationDance.vue'
 import SessionSurveyForm from '@/components/SessionSurveyForm.vue'
-import { defaultPlanOptions, sessionPlan, type Slot } from '@/core'
+import { defaultPlanOptions, restBetweenRepsLimits, sessionPlan, type Slot } from '@/core'
 import type { CoachMode, SessionSurvey } from '@/data/schema'
 import { usePlayer } from '@/session/player'
 import { hush, speak, voiceAvailable } from '@/session/voice'
@@ -17,7 +17,14 @@ const router = useRouter()
 const wakeLock = useWakeLock()
 
 const options = defaultPlanOptions()
-const plan = sessionPlan(app.routine, options)
+const plan = computed(() => sessionPlan(app.routine, options))
+const restLimits = restBetweenRepsLimits()
+const restSeconds = computed(() => app.data.settings.restBetweenRepsMs / 1000)
+
+function changeRest(byMs: number) {
+  const ms = app.data.settings.restBetweenRepsMs + byMs
+  if (ms >= restLimits.minMs && ms <= restLimits.maxMs) void app.setRestBetweenReps(ms)
+}
 const getReadySeconds = Math.round(options.getReadyMs / 1000)
 
 type Stage = 'choose' | 'running' | 'survey' | 'celebrate'
@@ -138,6 +145,31 @@ async function saveSurvey(answers: Omit<SessionSurvey, 'date' | 'slot'>) {
     <div class="text-body-small text-center text-medium-emphasis">
       Tap one to start. Exercises follow on by themselves.
     </div>
+    <v-card variant="tonal" class="pa-3 mt-2">
+      <div class="d-flex align-center">
+        <div class="flex-1-1">
+          <div class="text-title-medium">Rest between reps</div>
+          <div class="text-body-small text-medium-emphasis">Stays as you leave it</div>
+        </div>
+        <v-btn
+          icon="mdi-minus"
+          variant="text"
+          aria-label="Shorter rest"
+          :disabled="app.data.settings.restBetweenRepsMs <= restLimits.minMs"
+          @click="changeRest(-restLimits.stepMs)"
+        />
+        <div class="text-title-large mx-2" style="min-width: 3ch; text-align: center">
+          {{ restSeconds }} s
+        </div>
+        <v-btn
+          icon="mdi-plus"
+          variant="text"
+          aria-label="Longer rest"
+          :disabled="app.data.settings.restBetweenRepsMs >= restLimits.maxMs"
+          @click="changeRest(restLimits.stepMs)"
+        />
+      </div>
+    </v-card>
   </div>
 
   <div v-else-if="stage === 'running'" class="d-flex flex-column ga-4 align-center text-center">

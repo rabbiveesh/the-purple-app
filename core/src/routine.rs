@@ -86,6 +86,48 @@ pub fn default_routine() -> Routine {
     }
 }
 
+/// The limits and default for the user's own rest between reps.
+#[derive(Tsify, Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct RestBetweenReps {
+    pub default_ms: u32,
+    pub min_ms: u32,
+    pub max_ms: u32,
+    pub step_ms: u32,
+}
+
+pub const REST_BETWEEN_REPS: RestBetweenReps = RestBetweenReps {
+    default_ms: 5_000,
+    min_ms: 1_000,
+    max_ms: 15_000,
+    step_ms: 1_000,
+};
+
+/// The routine with every rest between reps set to `rest_ms` (kept within the allowed range).
+/// For long holds, the release after each hold is that rest.
+pub fn with_rest_between_reps(routine: &Routine, rest_ms: u32) -> Routine {
+    let rest_ms = rest_ms.clamp(REST_BETWEEN_REPS.min_ms, REST_BETWEEN_REPS.max_ms);
+    Routine {
+        exercises: routine
+            .exercises
+            .iter()
+            .map(|e| match e.movement {
+                Movement::Hold { hold_ms, .. } => Exercise {
+                    movement: Movement::Hold {
+                        hold_ms,
+                        release_ms: rest_ms,
+                    },
+                    ..e.clone()
+                },
+                _ => Exercise {
+                    rest_ms,
+                    ..e.clone()
+                },
+            })
+            .collect(),
+    }
+}
+
 /// Pretzelometer rotomies earned by one full session: one per squeeze.
 pub fn rotomies(routine: &Routine) -> u32 {
     routine
@@ -104,6 +146,31 @@ mod tests {
         let routine = default_routine();
         assert_eq!(routine.exercises.len(), 3);
         assert!(routine.exercises.iter().all(|e| e.reps == 10));
+    }
+
+    #[test]
+    fn the_rest_between_reps_can_be_changed_for_every_exercise() {
+        let routine = with_rest_between_reps(&default_routine(), 5_000);
+        let [slow, hold, quick] = &routine.exercises[..] else {
+            panic!("expected three exercises")
+        };
+        assert_eq!(slow.rest_ms, 5_000);
+        assert_eq!(quick.rest_ms, 5_000);
+        assert_eq!(
+            hold.movement,
+            Movement::Hold {
+                hold_ms: 10_000,
+                release_ms: 5_000
+            }
+        );
+    }
+
+    #[test]
+    fn the_rest_between_reps_stays_within_limits() {
+        let routine = with_rest_between_reps(&default_routine(), 0);
+        assert_eq!(routine.exercises[0].rest_ms, REST_BETWEEN_REPS.min_ms);
+        let routine = with_rest_between_reps(&default_routine(), 60_000);
+        assert_eq!(routine.exercises[0].rest_ms, REST_BETWEEN_REPS.max_ms);
     }
 
     #[test]

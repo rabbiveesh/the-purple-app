@@ -1,3 +1,4 @@
+import { restBetweenRepsLimits } from '@/core'
 import { getStorage } from '@/storage'
 import { migrate } from './migrations'
 import { SCHEMA_VERSION, type AppData } from './schema'
@@ -11,6 +12,7 @@ export function emptyData(): AppData {
     sessionSurveys: [],
     weeklyCheckIns: [],
     monthlyCheckIns: [],
+    settings: { restBetweenRepsMs: restBetweenRepsLimits().defaultMs },
   }
 }
 

@@ -25,12 +25,16 @@ One session, twice a day:
 
 | Exercise | One rep | Reps | Between reps |
 | --- | --- | --- | --- |
-| 1. Slow squeezes | Squeeze up over 5 s, release over 5 s | 10 | 3 s rest |
-| 2. Long holds | Hold 10 s, then release for 3 s | 10 | (the release) |
-| 3. Quick squeezes | 10 short squeezes, one per second | 10 | 3 s rest |
+| 1. Slow squeezes | Squeeze up over 5 s, release over 5 s | 10 | rest |
+| 2. Long holds | Hold 10 s, then release for the rest time | 10 | (the release) |
+| 3. Quick squeezes | 10 short squeezes, one per second | 10 | rest |
 
-About 6.7 minutes. The routine is data in the core, so it can change later (the physical
-therapist may make it harder over time).
+The rest between reps is a setting, because different situations call for different rests. It
+defaults to 5 s (the physical therapist's original was 3 s), can be set from 1 to 15 s on the
+start screen, and stays as she leaves it. At 5 s a session takes about 8 minutes.
+
+The routine is data in the core, so it can change later (the physical therapist may make it harder
+over time).
 
 ## A session
 

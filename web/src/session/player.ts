@@ -1,7 +1,7 @@
 // Plays a session plan against the clock: the current step, the cues as their moment passes,
 // and pausing. All timing rules come from the core's plan; this only follows it.
 import { useRafFn } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { computed, ref, toValue, type MaybeRefOrGetter } from 'vue'
 
 import type { Cue, SessionPlan, Step } from '@/core'
 
@@ -17,8 +17,9 @@ export function cuesDue(plan: SessionPlan, next: number, ms: number): { due: Cue
   return { due: plan.cues.slice(next, end), next: end }
 }
 
+/** The plan is read on every frame, so it can be adjusted until play() is first called. */
 export function usePlayer(
-  plan: SessionPlan,
+  planSource: MaybeRefOrGetter<SessionPlan>,
   handlers: { onCue: (cue: Cue) => void; onFinish: () => void },
 ) {
   const elapsedMs = ref(0)
@@ -28,6 +29,7 @@ export function usePlayer(
   let lastFrame: number | null = null
 
   function advance(now: number) {
+    const plan = toValue(planSource)
     const delta = lastFrame === null ? 0 : now - lastFrame
     lastFrame = now
     elapsedMs.value = Math.min(plan.totalMs, elapsedMs.value + delta)
@@ -58,7 +60,7 @@ export function usePlayer(
     raf.pause()
   }
 
-  const step = computed(() => stepAt(plan, elapsedMs.value))
+  const step = computed(() => stepAt(toValue(planSource), elapsedMs.value))
   const msIntoStep = computed(() => (step.value ? elapsedMs.value - step.value.startMs : 0))
   /** 0..1 through the current step. */
   const stepProgress = computed(() =>

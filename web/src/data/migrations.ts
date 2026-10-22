@@ -10,6 +10,8 @@ const migrations: Record<number, (data: Record<string, unknown>) => Record<strin
     weeklyCheckIns: [],
     monthlyCheckIns: [],
   }),
+  // v2 had a fixed 3 s rest; v3 makes it a setting, starting at 5 s.
+  2: (data) => ({ ...data, settings: { restBetweenRepsMs: 5_000 } }),
 }
 
 export class UnsupportedDataError extends Error {}

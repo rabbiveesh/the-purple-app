@@ -19,6 +19,7 @@
     "@mdi/font": "^7.4.47",
     "@vueuse/core": "^15.0.0",
     "canvas-confetti": "^1.9.4",
+    "date-fns": "^4.4.0",
     "pinia": "^4.0.3",
     "purple-core": "file:../core/pkg",
     "unstorage": "^1.17.5",
